@@ -286,6 +286,24 @@ public class ConfigObject : INotifyPropertyChanged
         }
     }
 
+    // Keeps the main window above other windows, so it can be used as a heads up display
+    // over a game running borderless.
+    [JsonProperty("always_on_top")] private bool _alwaysOnTop;
+
+    [JsonIgnore]
+    public bool AlwaysOnTop
+    {
+        get => _alwaysOnTop;
+        set
+        {
+            if (_alwaysOnTop != value)
+            {
+                _alwaysOnTop = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     [JsonProperty("disable_when_muted")] private bool _disableWhenMuted = false;
 
     [JsonIgnore]

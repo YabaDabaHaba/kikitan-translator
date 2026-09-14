@@ -63,6 +63,10 @@ public class UpdateConfig(Manager manager) : IHandler
                 AppConfig.ConfigObject.ChatboxOrder = Convert.ToInt32((long) d.Value);
 
                 break;
+            case "always_on_top":
+                AppConfig.ConfigObject.AlwaysOnTop = (bool) d.Value;
+
+                break;
             case "chinese_reading_mode":
                 AppConfig.ConfigObject.ChineseReadingMode = Convert.ToInt32((long) d.Value);
 

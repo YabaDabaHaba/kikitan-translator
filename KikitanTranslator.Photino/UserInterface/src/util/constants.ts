@@ -14,6 +14,7 @@ export type config = {
     furigana_line: 0 | 1 | 2;
     chinese_reading_mode: 0 | 1 | 2;
     pinyin_tone_marks: boolean;
+    always_on_top: boolean;
     furigana_line_position: 0 | 1;
     disable_when_muted: boolean;
     chatbox_wait_per_char_ms: number;

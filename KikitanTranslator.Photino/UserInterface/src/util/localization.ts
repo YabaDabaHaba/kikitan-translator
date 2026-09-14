@@ -227,6 +227,18 @@ export const localization = {
         cn: "两者之间的空行数",
         kr: "사이의 빈 줄 수",
     },
+    always_on_top: {
+        en: "Keep this window above other windows",
+        jp: "このウィンドウを常に手前に表示",
+        cn: "窗口始终置于最前",
+        kr: "창을 항상 위에 표시",
+    },
+    always_on_top_tooltip: {
+        en: "Floats the window over other windows so it can be used while playing. VRChat must be running borderless or windowed, since nothing can draw over exclusive fullscreen. The window still takes mouse clicks wherever it sits.",
+        jp: "他のウィンドウの上に表示し、プレイ中でも使えます。VRChatはボーダーレスまたはウィンドウモードで実行してください。ウィンドウの範囲ではクリックがこちらに入ります。",
+        cn: "将窗口悬浮在其他窗口上方，便于游戏中使用。VRChat 需以无边框或窗口模式运行，因为任何窗口都无法绘制在独占全屏之上。窗口所在区域仍会接收鼠标点击。",
+        kr: "창을 다른 창 위에 띄워 게임 중에도 사용할 수 있습니다. 전용 전체 화면 위에는 아무것도 그렸 수 없으므로 VRChat을 테두리 없음 또는 창 모드로 실행하세요. 창이 있는 영역의 마우스 클릭은 그대로 받습니다.",
+    },
     chinese_reading_mode: {
         en: "Chinese text in chatbox",
         jp: "チャットボックスの中国語表示",

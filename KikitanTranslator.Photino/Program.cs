@@ -95,6 +95,13 @@ public class Program
             })
             .Load(appUrl);
         
+        window.SetTopMost(AppConfig.ConfigObject.AlwaysOnTop);
+
+        // Photino must be touched on its own thread, and config updates arrive on
+        // whichever thread handled the web message.
+        AppConfig.OnUpdate += () => window.Invoke(() =>
+            window.SetTopMost(AppConfig.ConfigObject.AlwaysOnTop));
+
         window.WindowCreated += (_, _) =>
         {
             UpdateResolution(window);

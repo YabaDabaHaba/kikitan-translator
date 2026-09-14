@@ -395,6 +395,11 @@ export default function SettingsPage({ closeCallback, state }: SettingsProps) {
                         <FormControlLabel control={<Checkbox checked={state.config.send_user_data}
                                                              onChange={(e) => setConfig("send_user_data", e.target.checked)}/>}
                                           label={localization.enable_user_data[state.config.language]}/>
+                        <Tooltip title={localization.always_on_top_tooltip[state.config.language]}>
+                            <FormControlLabel control={<Checkbox checked={state.config.always_on_top}
+                                                                 onChange={(e) => setConfig("always_on_top", e.target.checked)}/>}
+                                              label={localization.always_on_top[state.config.language]}/>
+                        </Tooltip>
                     </FormGroup>
                     <FormGroup>
                         <div className="flex transition-all gap-2">
