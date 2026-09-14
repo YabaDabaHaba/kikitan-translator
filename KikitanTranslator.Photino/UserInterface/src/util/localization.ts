@@ -275,11 +275,17 @@ export const localization = {
         kr: "일본어 아래",
     },
     furigana_line_at_bottom: { en: "At the bottom", jp: "一番下", cn: "在最下方", kr: "맨 아래" },
+    desktop_listening_for: {
+        en: "Listening for",
+        jp: "聴き取り対象",
+        cn: "正在监听",
+        kr: "수신 언어",
+    },
     desktop_translation_details: {
-        en: "You can enable desktop translation from here. When others speak, the app will translate what they're saying and display it. It will appear as a box on the bottom of your main monitor if you're not on VR. If you're on VR, you'll see it appear below the center of your vision (Windows only for now)",
-        jp: "ここからデスクトップ翻訳を有効にできます。他の人が話すと、アプリがその内容を翻訳して表示します。VRを使用していない場合は、メインモニターの下部にボックスとして表示されます。VRを使用している場合は、視野の中央下に表示されます（現在はWindowsのみ）",
-        cn: "您可以从这里启用桌面翻译。当其他人说话时，应用程序会翻译他们所说的内容并显示出来。如果您不在VR中，它将作为一个框显示在主显示器的底部。如果您在VR中，它将出现在您视野中央的下方（目前仅支持Windows）",
-        kr: "여기서 데스크톱 번역을 활성화할 수 있습니다. 다른 사람이 말할 때 앱이 내용을 번역하여 표시합니다. VR을 사용하지 않는 경우 메인 모니터 하단에 박스로 표시됩니다. VR을 사용하는 경우 시야 중앙 아래에 표시됩니다(현재 Windows만 지원)",
+        en: "Translates what other people say, from your target language into your own. It listens for your target language specifically, so audio in any other language will come out as nonsense. It appears at the bottom of your main monitor, or below the centre of your vision in VR (Windows only for now).",
+        jp: "他の人の発話を、翻訳先言語からあなたの言語へ翻訳します。翻訳先言語を聞き取るため、それ以外の言語の音声では意味のない結果になります。メインモニターの下部、VRでは視界の中央下に表示されます（現在Windowsのみ）。",
+        cn: "将他人说的话从您的目标语言翻译为您的语言。它只监听您设定的目标语言，因此其他语言的音频会得到无意义的结果。它会显示在主显示器底部，或VR中视野中央下方（目前仅限Windows）。",
+        kr: "다른 사람의 말을 대상 언어에서 내 언어로 번역합니다. 대상 언어만 수신하므로 다른 언어의 음성은 의미 없는 결과가 됩니다. 기본 모니터 하단, VR에서는 시야 중앙 아래에 표시됩니다(현재 Windows 전용).",
     },
     thank_you: {
         en: "Thank you for using Kikitan!",

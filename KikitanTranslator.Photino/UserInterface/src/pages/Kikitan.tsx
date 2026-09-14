@@ -44,6 +44,12 @@ import {
 } from "../util/photino.ts";
 
 export default function Kikitan({ state }: { state: app_state }) {
+    // Desktop translation listens for the target language, which is not obvious from the
+    // toggle alone, so the actual direction is spelled out next to it.
+    const languageName = (code: string) =>
+        (langTo.find((l) => l.code === code) ?? langSource.find((l) => l.code === code))
+            ?.name[state.config.language] ?? code;
+
     const [messageHistory, setMessageHistory] = React.useState<{ source: string, translation: string, timestamp: number }[]>([])
     
     const [detecting, setDetecting] = React.useState(false);
@@ -550,6 +556,11 @@ export default function Kikitan({ state }: { state: app_state }) {
                         </div>
                     </Tooltip>
                 </div>
+                {state.config.desktop_translation && <div className="justify-center flex mb-2">
+                    <p className="text-xs opacity-60">
+                        {localization.desktop_listening_for[state.config.language]}: {languageName(state.config.target_language)} → {languageName(state.config.source_language)}
+                    </p>
+                </div>}
                 <div id="default-mic" className="justify-center flex mb-2 ml-2">
                     <KeyboardVoiceIcon fontSize="small" className="mt-3" />
                     <Select
