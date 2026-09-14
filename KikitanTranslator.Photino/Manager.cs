@@ -252,7 +252,7 @@ public class Manager
             
                 _writer.Write(new OverlayPipeData { Text = text, NoLanguageSpace =
                     (AppConfig.ConfigObject.SourceLanguage == "ja" || AppConfig.ConfigObject.SourceLanguage == "ko" ||
-                     AppConfig.ConfigObject.SourceLanguage == "cn"), Time = time < 5000 ? 5000 : time});
+                     AppConfig.ConfigObject.SourceLanguage == "zh"), Time = time < 5000 ? 5000 : time});
             }));
             
             if (AppConfig.ConfigObject.SendUserData)
