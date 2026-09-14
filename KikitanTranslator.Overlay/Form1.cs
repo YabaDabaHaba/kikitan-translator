@@ -1,3 +1,5 @@
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
 namespace KikitanTranslator.Overlay;
@@ -13,8 +15,6 @@ public partial class Form1 : Form
         InitializeComponent();
         this.FormBorderStyle = FormBorderStyle.None;
         this.TopMost = true;
-        this.BackColor = Color.Lime;
-        this.TransparencyKey = Color.Lime;
         this.ShowInTaskbar = false;
         this.Bounds = bounds;
         
@@ -34,25 +34,16 @@ public partial class Form1 : Form
     
     protected override void OnPaintBackground(PaintEventArgs e) { }
 
-    protected override void OnPaint(PaintEventArgs e)
-    {
-        if (_backBuffer != null)
-        {
-            e.Graphics.DrawImageUnscaled(_backBuffer, 0, 0);
-        }
-        else
-        {
-            e.Graphics.Clear(BackColor);
-        }
-    }
+    // Painting goes through UpdateLayeredWindow instead of the normal paint cycle.
+    protected override void OnPaint(PaintEventArgs e) { }
     
     private void RebuildBackBuffer()
     {
-        var newBuffer = new Bitmap(this.Width, this.Height);
+        var newBuffer = new Bitmap(this.Width, this.Height, PixelFormat.Format32bppArgb);
 
         using (var g = Graphics.FromImage(newBuffer))
         {
-            g.Clear(BackColor);
+            g.Clear(Color.Transparent);
 
             if (img != null)
             {
@@ -61,16 +52,60 @@ public partial class Form1 : Form
                 int x = (this.Width - w) / 2;
                 int y = this.Height - h - 50;
 
-                Console.WriteLine($"Rendering to back buffer: {w}x{h}");
+                g.CompositingMode = CompositingMode.SourceCopy;
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.DrawImage(img, x, y, w, h);
             }
         }
-        
+
         var old = Interlocked.Exchange(ref _backBuffer, newBuffer);
         old?.Dispose();
 
-        Invalidate();
-        Update();
+        PushToLayeredWindow(newBuffer);
+    }
+
+    /// <summary>
+    /// Hands the whole frame to the window with its alpha channel intact. A colour keyed
+    /// window can only cut pixels fully in or out, which is why captions used to sit on an
+    /// opaque slab with hard edges.
+    /// </summary>
+    private void PushToLayeredWindow(Bitmap bitmap)
+    {
+        var screenDc = GetDC(IntPtr.Zero);
+        var memDc = CreateCompatibleDC(screenDc);
+        var hBitmap = IntPtr.Zero;
+        var oldBitmap = IntPtr.Zero;
+
+        try
+        {
+            hBitmap = bitmap.GetHbitmap(Color.FromArgb(0));
+            oldBitmap = SelectObject(memDc, hBitmap);
+
+            var size = new SIZE { cx = bitmap.Width, cy = bitmap.Height };
+            var source = new POINT { x = 0, y = 0 };
+            var destination = new POINT { x = this.Left, y = this.Top };
+            var blend = new BLENDFUNCTION
+            {
+                BlendOp = AC_SRC_OVER,
+                BlendFlags = 0,
+                SourceConstantAlpha = 255,
+                AlphaFormat = AC_SRC_ALPHA
+            };
+
+            UpdateLayeredWindow(this.Handle, screenDc, ref destination, ref size, memDc, ref source,
+                0, ref blend, ULW_ALPHA);
+        }
+        finally
+        {
+            if (hBitmap != IntPtr.Zero)
+            {
+                SelectObject(memDc, oldBitmap);
+                DeleteObject(hBitmap);
+            }
+
+            DeleteDC(memDc);
+            ReleaseDC(IntPtr.Zero, screenDc);
+        }
     }
 
     public void SetImage(Image newImg, int timeLeft)
@@ -96,6 +131,33 @@ public partial class Form1 : Form
             Console.WriteLine("Image cleared.");
         });
     }
+
+    private const byte AC_SRC_OVER = 0;
+    private const byte AC_SRC_ALPHA = 1;
+    private const int ULW_ALPHA = 2;
+
+    [StructLayout(LayoutKind.Sequential)] private struct SIZE { public int cx; public int cy; }
+    [StructLayout(LayoutKind.Sequential)] private struct POINT { public int x; public int y; }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    private struct BLENDFUNCTION
+    {
+        public byte BlendOp;
+        public byte BlendFlags;
+        public byte SourceConstantAlpha;
+        public byte AlphaFormat;
+    }
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern bool UpdateLayeredWindow(IntPtr hwnd, IntPtr hdcDst, ref POINT pptDst, ref SIZE psize,
+        IntPtr hdcSrc, ref POINT pprSrc, int crKey, ref BLENDFUNCTION pblend, int dwFlags);
+
+    [DllImport("user32.dll")] private static extern IntPtr GetDC(IntPtr hWnd);
+    [DllImport("user32.dll")] private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+    [DllImport("gdi32.dll")] private static extern IntPtr CreateCompatibleDC(IntPtr hDC);
+    [DllImport("gdi32.dll")] private static extern bool DeleteDC(IntPtr hdc);
+    [DllImport("gdi32.dll")] private static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObject);
+    [DllImport("gdi32.dll")] private static extern bool DeleteObject(IntPtr hObject);
 
     private const int GWL_EXSTYLE = -20;
     private const int WS_EX_LAYERED = 0x80000;

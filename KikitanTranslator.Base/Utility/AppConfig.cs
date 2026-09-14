@@ -286,6 +286,40 @@ public class ConfigObject : INotifyPropertyChanged
         }
     }
 
+    [JsonProperty("overlay_font")] private string _overlayFont = "Ink Free";
+
+    [JsonIgnore]
+    public string OverlayFont
+    {
+        get => _overlayFont;
+        set
+        {
+            if (_overlayFont != value)
+            {
+                _overlayFont = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    // How opaque the panel behind overlay captions is, 0 to 100. The text itself stays
+    // fully opaque so it remains readable.
+    [JsonProperty("overlay_panel_opacity")] private int _overlayPanelOpacity = 55;
+
+    [JsonIgnore]
+    public int OverlayPanelOpacity
+    {
+        get => _overlayPanelOpacity;
+        set
+        {
+            if (_overlayPanelOpacity != value)
+            {
+                _overlayPanelOpacity = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     // Keeps the main window above other windows, so it can be used as a heads up display
     // over a game running borderless.
     [JsonProperty("always_on_top")] private bool _alwaysOnTop;

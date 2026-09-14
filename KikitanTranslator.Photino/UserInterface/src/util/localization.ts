@@ -227,6 +227,18 @@ export const localization = {
         cn: "两者之间的空行数",
         kr: "사이의 빈 줄 수",
     },
+    overlay_font: {
+        en: "Caption font",
+        jp: "字幕のフォント",
+        cn: "字幕字体",
+        kr: "자막 글꼴",
+    },
+    overlay_panel_opacity: {
+        en: "Caption background opacity",
+        jp: "字幕背景の濃さ",
+        cn: "字幕背景不透明度",
+        kr: "자막 배경 불투명도",
+    },
     always_on_top: {
         en: "Keep this window above other windows",
         jp: "このウィンドウを常に手前に表示",

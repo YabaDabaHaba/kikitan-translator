@@ -63,6 +63,14 @@ public class UpdateConfig(Manager manager) : IHandler
                 AppConfig.ConfigObject.ChatboxOrder = Convert.ToInt32((long) d.Value);
 
                 break;
+            case "overlay_font":
+                AppConfig.ConfigObject.OverlayFont = (string) d.Value;
+
+                break;
+            case "overlay_panel_opacity":
+                AppConfig.ConfigObject.OverlayPanelOpacity = Convert.ToInt32((long) d.Value);
+
+                break;
             case "always_on_top":
                 AppConfig.ConfigObject.AlwaysOnTop = (bool) d.Value;
 

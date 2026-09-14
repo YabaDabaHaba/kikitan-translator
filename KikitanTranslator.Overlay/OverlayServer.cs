@@ -70,21 +70,40 @@ public class OverlayServer
         float maxTextWidth = canvasWidth - paddingX * 2;
         float maxTextHeight = canvasHeight - paddingY * 2;
 
-        var imageInfo = new SKImageInfo(canvasWidth, canvasHeight, SKColorType.Rgba8888, SKAlphaType.Premul);
+        OverlayConfig.Reload();
+
+        // Bgra8888 premultiplied is what a per pixel alpha layered window expects, so the
+        // surface can be handed to the window without a conversion.
+        var imageInfo = new SKImageInfo(canvasWidth, canvasHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
 
         using var surface = SKSurface.Create(imageInfo);
         var canvas = surface.Canvas;
 
-        canvas.Clear(new SKColor(0x33, 0x33, 0x33));
-        
+        // Transparent, then a translucent rounded panel behind the text. The panel carries
+        // the opacity so the text itself stays fully opaque and readable.
+        canvas.Clear(SKColors.Transparent);
+
+        if (OverlayConfig.PanelOpacity > 0)
+        {
+            using var panelPaint = new SKPaint
+            {
+                Color = new SKColor(0x11, 0x11, 0x11, (byte)(OverlayConfig.PanelOpacity * 255 / 100)),
+                IsAntialias = true,
+            };
+
+            canvas.DrawRoundRect(
+                new SKRect(paddingX / 2, paddingY / 2, canvasWidth - paddingX / 2, canvasHeight - paddingY / 2),
+                48, 48, panelPaint);
+        }
+
         var paint = new SKPaint
         {
             Color = SKColors.White,
             IsAntialias = true,
             TextAlign = SKTextAlign.Center,
         };
-        
-        var typeface = SKTypeface.FromFamilyName("Arial", SKFontStyle.Normal);
+
+        var typeface = SKTypeface.FromFamilyName(OverlayConfig.Font, SKFontStyle.Normal);
         var font = new SKFont(typeface, fontSize);
 
         string currentText = text;

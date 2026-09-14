@@ -395,6 +395,20 @@ export default function SettingsPage({ closeCallback, state }: SettingsProps) {
                         <FormControlLabel control={<Checkbox checked={state.config.send_user_data}
                                                              onChange={(e) => setConfig("send_user_data", e.target.checked)}/>}
                                           label={localization.enable_user_data[state.config.language]}/>
+                        <p className={labelClass}>{localization.overlay_font[state.config.language]}</p>
+                        <Select sx={selectSx} MenuProps={selectMenuProps} className="mr-4 mt-2 w-64"
+                                value={state.config.overlay_font}
+                                onChange={(e) => setConfig("overlay_font", e.target.value)}>
+                            {["Ink Free", "Segoe Print", "Segoe Script", "Comic Sans MS", "Bradley Hand ITC", "Segoe UI", "Arial"]
+                                .map((f) => <MenuItem key={f} sx={menuItemSx} value={f}>{f}</MenuItem>)}
+                        </Select>
+                        <p className={labelClass}>{localization.overlay_panel_opacity[state.config.language]}</p>
+                        <Select sx={selectSx} MenuProps={selectMenuProps} className="mr-4 mt-2 w-64"
+                                value={state.config.overlay_panel_opacity}
+                                onChange={(e) => setConfig("overlay_panel_opacity", e.target.value)}>
+                            {[0, 25, 40, 55, 70, 85, 100].map((o) =>
+                                <MenuItem key={o} sx={menuItemSx} value={o}>{o}%</MenuItem>)}
+                        </Select>
                         <Tooltip title={localization.always_on_top_tooltip[state.config.language]}>
                             <FormControlLabel control={<Checkbox checked={state.config.always_on_top}
                                                                  onChange={(e) => setConfig("always_on_top", e.target.checked)}/>}
