@@ -15,7 +15,14 @@ public class Chatbox : IOutput
         {
             OscChatbox.SetIsTyping(!final);
             if (!final && !AppConfig.ConfigObject.SendWithoutWaitingForFinish) return;
-            
+
+            if (!final)
+            {
+                SendPartial(recognized);
+
+                return;
+            }
+
             var recognizedForChatbox = Annotate(recognized, AppConfig.ConfigObject.SourceLanguage);
             var translatedForChatbox = Annotate(translated, AppConfig.ConfigObject.TargetLanguage);
 
@@ -53,6 +60,26 @@ public class Chatbox : IOutput
             return $"{first}\n{readingLine}{gap}{second}";
 
         return Attach($"{first}{gap}{second}", readingLine);
+    }
+
+    // VRChat rate limits the chatbox, and recognition emits partials far faster than it
+    // will accept them, so partials are capped well below the final message rate.
+    private static readonly TimeSpan PartialInterval = TimeSpan.FromMilliseconds(1200);
+    private static DateTime _lastPartial = DateTime.MinValue;
+
+    /// <summary>
+    /// Nothing has been translated while speech is still in progress, so the recognised
+    /// text is shown instead of an empty line. The final message then replaces it.
+    /// </summary>
+    private static void SendPartial(string recognized)
+    {
+        if (DateTime.UtcNow - _lastPartial < PartialInterval) return;
+
+        var text = Annotate(recognized, AppConfig.ConfigObject.SourceLanguage);
+        if (text.Trim().Length == 0) return;
+
+        _lastPartial = DateTime.UtcNow;
+        OscChatbox.SendMessage(text, true);
     }
 
     private static bool HasReadings(string language) => language is "ja" or "zh";

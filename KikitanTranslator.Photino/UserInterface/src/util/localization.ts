@@ -180,10 +180,10 @@ export const localization = {
         kr: "대기 없이 채팅박스/오버레이로 전송"
     },
     send_to_chatbox_without_waiting_tooltip: {
-        en: "Toggling this on will send the output of your speech to the chatbox and the desktop audio to the desktop overlay (if enabled). Note that in VRChat's case, you will most likely get rate limited very quickly if you enable this!",
-        jp: "これを有効にすると、あなたの音声の出力がチャットボックスに送信され、デスクトップオーディオがデスクトップオーバーレイ（有効な場合）に送信されます。VRChatの場合、これを有効にするとすぐにレート制限にかかる可能性が高いのでご注意ください！",
-        cn: "启用此选项后，您的语音输出将发送到聊天框，桌面音频将发送到桌面叠加层（如果已启用）。请注意，在VRChat中启用此功能很可能会很快触发速率限制！",
-        kr: "이 기능을 켜면 음성 출력이 채팅박스로 전송되고, 데스크톱 오디오가 데스크톱 오버레이(활성화된 경우)로 전송됩니다. VRChat의 경우 이 기능을 활성화하면 매우 빠르게 속도 제한(rate limit)에 걸릴 가능성이 높으니 참고하세요!"
+        en: "With this on, what you say appears in the chatbox while you are still speaking, and is replaced by the translation once it is ready. Sends are spaced out to stay within VRChat's chatbox rate limit.",
+        jp: "これを有効にすると、話している途中で認識されたテキストがチャットボックスに表示され、翻訳ができ次第置き換わります。VRChatのレート制限を超えないよう送信間隔が調整されます。",
+        cn: "开启后，您说话的内容会在说话过程中显示在聊天框中，并在翻译完成后替换。发送间隔会自动控制，以符合VRChat的聊天框速率限制。",
+        kr: "켜면 말하는 동안 인식된 텍스트가 채팅창에 표시되고, 번역이 완료되면 교체됩니다. VRChat의 속도 제한을 넘지 않도록 전송 간격이 조정됩니다.",
     },
     do_not_send_original_tooltip: {
         en: "Enabling this will make it so that only the translated text will be sent to the chatbox",
