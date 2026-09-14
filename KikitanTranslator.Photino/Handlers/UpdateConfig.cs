@@ -51,6 +51,30 @@ public class UpdateConfig(Manager manager) : IHandler
                 AppConfig.ConfigObject.TranslationOnly = (bool) d.Value;
                 
                 break;
+            case "japanese_reading_mode":
+                AppConfig.ConfigObject.JapaneseReadingMode = Convert.ToInt32((long) d.Value);
+
+                break;
+            case "chatbox_separate_lines":
+                AppConfig.ConfigObject.ChatboxSeparateLines = (bool) d.Value;
+
+                break;
+            case "chatbox_order":
+                AppConfig.ConfigObject.ChatboxOrder = Convert.ToInt32((long) d.Value);
+
+                break;
+            case "chatbox_line_gap":
+                AppConfig.ConfigObject.ChatboxLineGap = Convert.ToInt32((long) d.Value);
+
+                break;
+            case "furigana_line":
+                AppConfig.ConfigObject.FuriganaLine = Convert.ToInt32((long) d.Value);
+
+                break;
+            case "furigana_line_position":
+                AppConfig.ConfigObject.FuriganaLinePosition = Convert.ToInt32((long) d.Value);
+
+                break;
             case "disable_when_muted":
                 AppConfig.ConfigObject.DisableWhenMuted = (bool) d.Value;
                 

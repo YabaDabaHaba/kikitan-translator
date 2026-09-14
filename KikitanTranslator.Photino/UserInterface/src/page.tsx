@@ -55,7 +55,12 @@ function App() {
     const [appState, setAppState] = React.useState<app_state>({});
 
     const [loaded, setLoaded] = React.useState(false)
-    
+
+    // Pages only paint their own height, so anything scrolled past them shows the body.
+    React.useEffect(() => {
+        if (appState.config == null) return;
+        document.body.style.backgroundColor = appState.config.light_mode ? "#ffffff" : "#020617";
+    }, [appState.config?.light_mode]);
 
     React.useEffect(() => {
         setTimeout(() => setLoaded(true), 300);
@@ -204,7 +209,7 @@ function App() {
                 <div
                     className={'transition-all z-30 w-full h-screen flex backdrop-blur-sm bg-transparent justify-center items-center absolute' + (settingsVisible ? " opacity-100" : " opacity-0 pointer-events-none")}>
                     <div
-                        className={`flex flex-col justify-between  w-10/12 h-5/6 outline outline-1 ${appState.config.light_mode ? "outline-slate-400" : "outline-slate-950"} rounded bg-white`}>
+                        className={`flex flex-col justify-between w-10/12 h-5/6 overflow-y-auto outline outline-1 ${appState.config.light_mode ? "outline-slate-400 bg-white" : "outline-slate-950 bg-slate-950"} rounded`}>
                         <SettingsPage state={appState} closeCallback={() => {
                             setSettingsVisible(false)
                             controlKikitan(true)

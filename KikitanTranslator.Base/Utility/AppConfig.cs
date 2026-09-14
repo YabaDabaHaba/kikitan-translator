@@ -150,6 +150,108 @@ public class ConfigObject : INotifyPropertyChanged
         }
     }
 
+    // Controls how Japanese text is shown in the VRChat chatbox.
+    // 0 = original, 1 = hiragana, 2 = furigana per kanji, 3 = furigana per word.
+    [JsonProperty("japanese_reading_mode")] private int _japaneseReadingMode;
+
+    [JsonIgnore]
+    public int JapaneseReadingMode
+    {
+        get => _japaneseReadingMode;
+        set
+        {
+            if (_japaneseReadingMode != value)
+            {
+                _japaneseReadingMode = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    [JsonProperty("chatbox_separate_lines")] private bool _chatboxSeparateLines;
+
+    [JsonIgnore]
+    public bool ChatboxSeparateLines
+    {
+        get => _chatboxSeparateLines;
+        set
+        {
+            if (_chatboxSeparateLines != value)
+            {
+                _chatboxSeparateLines = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    // 0 = translation first, 1 = original first.
+    [JsonProperty("chatbox_order")] private int _chatboxOrder;
+
+    [JsonIgnore]
+    public int ChatboxOrder
+    {
+        get => _chatboxOrder;
+        set
+        {
+            if (_chatboxOrder != value)
+            {
+                _chatboxOrder = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    // Blank lines inserted between the translation and the original.
+    [JsonProperty("chatbox_line_gap")] private int _chatboxLineGap;
+
+    [JsonIgnore]
+    public int ChatboxLineGap
+    {
+        get => _chatboxLineGap;
+        set
+        {
+            if (_chatboxLineGap != value)
+            {
+                _chatboxLineGap = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    // Readings on their own line. 0 = off, 1 = list of readings, 2 = the whole line in hiragana.
+    [JsonProperty("furigana_line")] private int _furiganaLine;
+
+    [JsonIgnore]
+    public int FuriganaLine
+    {
+        get => _furiganaLine;
+        set
+        {
+            if (_furiganaLine != value)
+            {
+                _furiganaLine = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    // 0 = directly under the Japanese, 1 = at the bottom.
+    [JsonProperty("furigana_line_position")] private int _furiganaLinePosition;
+
+    [JsonIgnore]
+    public int FuriganaLinePosition
+    {
+        get => _furiganaLinePosition;
+        set
+        {
+            if (_furiganaLinePosition != value)
+            {
+                _furiganaLinePosition = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     [JsonProperty("disable_when_muted")] private bool _disableWhenMuted = false;
 
     [JsonIgnore]

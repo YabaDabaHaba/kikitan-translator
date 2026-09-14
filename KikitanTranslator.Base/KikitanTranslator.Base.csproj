@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <!-- The windows flavour gets the WinRT projections used for Japanese readings;
+             the plain flavour keeps the Linux build working without them. -->
+        <TargetFrameworks>net9.0;net9.0-windows10.0.19041.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>

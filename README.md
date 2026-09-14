@@ -16,31 +16,48 @@
 - **Translation:** Translation of your speech to the chatbox in more than 10 major languages (6 accents of English and 6 dialects of Spanish along with languages such as Japanese, Korean, Chinese, Italian, French, Turkish, Russian, Polish, Portugal, German, French, Arabic, Swedish and so on)
 - **Transcription (Just Speech to Text):** If you don't want to translate, there is a transcription mode that sends whatever you say directly to the chatbox. Perfect for people that prefer to not speak in VRChat but be able to communicate with the convenience of speaking.
 
-## How to build
+## Build and run (Windows)
 
-### Required dependencies
+The maintained desktop application is the .NET/Photino project in `KikitanTranslator.Photino`. The Tauri files under `KikitanTranslator.Photino/UserInterface/src-tauri` are legacy and are not used by this build.
 
-- rust (recommended minimum is 1.77.2)
-- node (recommended minimum is v22.1.0)
+### Prerequisites
 
-```sh
-git clone https://github.com/YusufOzmen01/kikitan-translator
-cd kikitan-translator
+- .NET 9 SDK
+- Node.js 22 or newer
+- Microsoft Edge WebView2 Runtime (included with current Windows 10/11 installations)
 
-# to update dependencies
-npm i
+### Development
 
-# for development
-npm run tauri dev
+From the repository root, install the UI dependencies once:
 
-# signing is required if you want to use the updater
-# if don't want to use the updater, delete the updater plugin inside of tauri.conf.json
-
-# to sign the executable, generate a private and public keypair, then assign TAURI_SIGNING_PRIVATE_KEY environment variable and update the pubkey field inside of tauri.conf.json with your public key
-
-# for compiling as a release build
-npm run tauri build
+```powershell
+cd .\KikitanTranslator.Photino\UserInterface
+npm.cmd ci
 ```
+
+Start the UI development server in that terminal:
+
+```powershell
+npm.cmd run dev
+```
+
+In a second terminal at the repository root, run the desktop app:
+
+```powershell
+dotnet run --project .\KikitanTranslator.Photino\KikitanTranslator.Photino.csproj
+```
+
+### Release package
+
+From the repository root:
+
+```powershell
+dotnet build .\KikitanTranslator.Photino\KikitanTranslator.Photino.csproj -c Release
+```
+
+The build restores the pinned, local `vpk` packaging tool automatically. The installer is written below `KikitanTranslator.Photino\bin\Release\net9.0-windows10.0.19041.0\win-x64\Release`.
+
+The Windows build targets `net9.0-windows10.0.19041.0` so it can use the OS Japanese phonetic analyser for furigana; the Linux build (`-r linux-x64`) stays on plain `net9.0` and sends Japanese text unchanged.
 
 ## License
 

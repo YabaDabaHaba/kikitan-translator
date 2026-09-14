@@ -7,6 +7,12 @@ export type config = {
     speech_to_text_only: boolean;
     microphone: string;
     translation_only: boolean;
+    japanese_reading_mode: 0 | 1 | 2 | 3;
+    chatbox_separate_lines: boolean;
+    chatbox_order: 0 | 1;
+    chatbox_line_gap: number;
+    furigana_line: 0 | 1 | 2;
+    furigana_line_position: 0 | 1;
     disable_when_muted: boolean;
     chatbox_wait_per_char_ms: number;
     osc_port: number;

@@ -71,6 +71,25 @@ export default function SettingsPage({ closeCallback, state }: SettingsProps) {
         setPage(newValue);
     };
 
+    const selectSx = {
+        color: state.config.light_mode ? 'black' : 'white',
+        '& .MuiOutlinedInput-notchedOutline': {
+            borderColor: state.config.light_mode ? 'black' : '#94A3B8',
+        },
+        '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: state.config.light_mode ? 'black' : '#94A3B8',
+        },
+    };
+    const selectMenuProps = {
+        sx: {
+            "& .MuiPaper-root": {
+                backgroundColor: state.config.light_mode ? '#94A3B8' : '#020617',
+            }
+        }
+    };
+    const menuItemSx = {color: state.config.light_mode ? 'black' : 'white'};
+    const labelClass = `mt-2 ${state.config.light_mode ? "text-black" : "text-slate-400"}`;
+
     return <>
         <Box sx={{
             width: '100%',
@@ -87,8 +106,8 @@ export default function SettingsPage({ closeCallback, state }: SettingsProps) {
                 opacity: 0.3
             }
 
-        }} className={`relative w-max h-screen ${state.config.light_mode ? "" : "bg-slate-950 text-slate-200"}`}>
-            <div className="absolute z-10 ml-2">
+        }} className={`relative w-full min-h-full shrink-0 ${state.config.light_mode ? "" : "bg-slate-950 text-slate-200"}`}>
+            <div className="z-10 ml-2">
                 <Box className="flex" sx={{borderBottom: 1, borderColor: 'divider'}}>
                     <IconButton className="mr-2" onClick={() => {
                         closeCallback();
@@ -109,6 +128,74 @@ export default function SettingsPage({ closeCallback, state }: SettingsProps) {
                                                                  onChange={(e) => setConfig("translation_only", e.target.checked)}/>}
                                               label={localization.only_send_translation[state.config.language]}/>
                         </Tooltip>
+                        <Tooltip title={localization.chatbox_separate_lines_tooltip[state.config.language]}>
+                            <FormControlLabel control={<Checkbox checked={state.config.chatbox_separate_lines}
+                                                                 onChange={(e) => setConfig("chatbox_separate_lines", e.target.checked)}/>}
+                                              label={localization.chatbox_separate_lines[state.config.language]}/>
+                        </Tooltip>
+                        <p className={`mt-2 ${state.config.light_mode ? "text-black" : "text-slate-400"}`}>{localization.chatbox_order[state.config.language]}</p>
+                        <Select sx={{
+                            color: state.config.light_mode ? 'black' : 'white',
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                borderColor: state.config.light_mode ? 'black' : '#94A3B8',
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                                borderColor: state.config.light_mode ? 'black' : '#94A3B8',
+                            },
+                        }} MenuProps={{
+                            sx: {
+                                "& .MuiPaper-root": {
+                                    backgroundColor: state.config.light_mode ? '#94A3B8' : '#020617',
+                                }
+                            }
+                        }} className="mr-4 mt-2 w-64" value={state.config.chatbox_order}
+                                onChange={(e) => setConfig("chatbox_order", e.target.value)}>
+                            <MenuItem sx={{color: state.config.light_mode ? 'black' : 'white'}} value={0}>{localization.chatbox_translation_first[state.config.language]}</MenuItem>
+                            <MenuItem sx={{color: state.config.light_mode ? 'black' : 'white'}} value={1}>{localization.chatbox_original_first[state.config.language]}</MenuItem>
+                        </Select>
+                        <p className={labelClass}>{localization.chatbox_line_gap[state.config.language]}</p>
+                        <Select sx={selectSx} MenuProps={selectMenuProps} className="mr-4 mt-2 w-64"
+                                value={state.config.chatbox_line_gap}
+                                onChange={(e) => setConfig("chatbox_line_gap", e.target.value)}>
+                            {[0, 1, 2, 3].map((gap) => <MenuItem key={gap} sx={menuItemSx} value={gap}>{gap}</MenuItem>)}
+                        </Select>
+                        <p className={`mt-2 ${state.config.light_mode ? "text-black" : "text-slate-400"}`}>{localization.japanese_reading_mode[state.config.language]}</p>
+                        <Select sx={{
+                            color: state.config.light_mode ? 'black' : 'white',
+                            '& .MuiOutlinedInput-notchedOutline': {
+                                borderColor: state.config.light_mode ? 'black' : '#94A3B8',
+                            },
+                            '&:hover .MuiOutlinedInput-notchedOutline': {
+                                borderColor: state.config.light_mode ? 'black' : '#94A3B8',
+                            },
+                        }} MenuProps={{
+                            sx: {
+                                "& .MuiPaper-root": {
+                                    backgroundColor: state.config.light_mode ? '#94A3B8' : '#020617',
+                                }
+                            }
+                        }} className="mr-4 mt-2 w-64" value={state.config.japanese_reading_mode}
+                                onChange={(e) => setConfig("japanese_reading_mode", e.target.value)}>
+                            <MenuItem sx={{color: state.config.light_mode ? 'black' : 'white'}} value={0}>{localization.japanese_original[state.config.language]}</MenuItem>
+                            <MenuItem sx={{color: state.config.light_mode ? 'black' : 'white'}} value={1}>{localization.japanese_hiragana[state.config.language]}</MenuItem>
+                            <MenuItem sx={{color: state.config.light_mode ? 'black' : 'white'}} value={2}>{localization.japanese_furigana[state.config.language]}</MenuItem>
+                            <MenuItem sx={{color: state.config.light_mode ? 'black' : 'white'}} value={3}>{localization.japanese_furigana_word[state.config.language]}</MenuItem>
+                        </Select>
+                        <p className={labelClass}>{localization.furigana_line[state.config.language]}</p>
+                        <Select sx={selectSx} MenuProps={selectMenuProps} className="mr-4 mt-2 w-64"
+                                value={state.config.furigana_line}
+                                onChange={(e) => setConfig("furigana_line", e.target.value)}>
+                            <MenuItem sx={menuItemSx} value={0}>{localization.furigana_line_off[state.config.language]}</MenuItem>
+                            <MenuItem sx={menuItemSx} value={1}>{localization.furigana_line_list[state.config.language]}</MenuItem>
+                            <MenuItem sx={menuItemSx} value={2}>{localization.furigana_line_kana[state.config.language]}</MenuItem>
+                        </Select>
+                        <p className={labelClass}>{localization.furigana_line_position[state.config.language]}</p>
+                        <Select sx={selectSx} MenuProps={selectMenuProps} className="mr-4 mt-2 w-64"
+                                value={state.config.furigana_line_position}
+                                onChange={(e) => setConfig("furigana_line_position", e.target.value)}>
+                            <MenuItem sx={menuItemSx} value={0}>{localization.furigana_line_under_japanese[state.config.language]}</MenuItem>
+                            <MenuItem sx={menuItemSx} value={1}>{localization.furigana_line_at_bottom[state.config.language]}</MenuItem>
+                        </Select>
                         <Tooltip title={localization.disable_kikitan_when_muted_tooltip[state.config.language]}>
                             <FormControlLabel control={<Checkbox checked={state.config.disable_when_muted}
                                                                  onChange={(e) => setConfig("disable_when_muted", e.target.checked)}/>}

@@ -28,7 +28,9 @@ public class Program
         var exeDir = AppContext.BaseDirectory;
         Directory.SetCurrentDirectory(exeDir);
         PhotinoServer.CreateStaticFileServer(args, out string baseUrl).RunAsync();
-        string appUrl = $"{baseUrl}/index.html";
+        // WebView2 caches index.html per localhost URL, so after an update it otherwise
+        // keeps loading the previous build's hashed bundle. A per-launch token busts it.
+        string appUrl = $"{baseUrl}/index.html?v={Guid.NewGuid():N}";
 #endif
         bool noUI = Array.Exists(args, e => e.Trim().Contains("--no-ui"));
         bool debug = Array.Exists(args, e => e.Trim().Contains("--debug"));
