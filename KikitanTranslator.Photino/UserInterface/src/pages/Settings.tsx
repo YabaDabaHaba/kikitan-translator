@@ -181,6 +181,19 @@ export default function SettingsPage({ closeCallback, state }: SettingsProps) {
                             <MenuItem sx={{color: state.config.light_mode ? 'black' : 'white'}} value={2}>{localization.japanese_furigana[state.config.language]}</MenuItem>
                             <MenuItem sx={{color: state.config.light_mode ? 'black' : 'white'}} value={3}>{localization.japanese_furigana_word[state.config.language]}</MenuItem>
                         </Select>
+                        <p className={labelClass}>{localization.chinese_reading_mode[state.config.language]}</p>
+                        <Select sx={selectSx} MenuProps={selectMenuProps} className="mr-4 mt-2 w-64"
+                                value={state.config.chinese_reading_mode}
+                                onChange={(e) => setConfig("chinese_reading_mode", e.target.value)}>
+                            <MenuItem sx={menuItemSx} value={0}>{localization.chinese_hanzi[state.config.language]}</MenuItem>
+                            <MenuItem sx={menuItemSx} value={1}>{localization.chinese_pinyin_only[state.config.language]}</MenuItem>
+                            <MenuItem sx={menuItemSx} value={2}>{localization.chinese_hanzi_pinyin[state.config.language]}</MenuItem>
+                        </Select>
+                        <Tooltip title={localization.pinyin_tone_marks_tooltip[state.config.language]}>
+                            <FormControlLabel control={<Checkbox checked={state.config.pinyin_tone_marks}
+                                                                 onChange={(e) => setConfig("pinyin_tone_marks", e.target.checked)}/>}
+                                              label={localization.pinyin_tone_marks[state.config.language]}/>
+                        </Tooltip>
                         <p className={labelClass}>{localization.furigana_line[state.config.language]}</p>
                         <Select sx={selectSx} MenuProps={selectMenuProps} className="mr-4 mt-2 w-64"
                                 value={state.config.furigana_line}

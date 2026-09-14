@@ -63,6 +63,14 @@ public class UpdateConfig(Manager manager) : IHandler
                 AppConfig.ConfigObject.ChatboxOrder = Convert.ToInt32((long) d.Value);
 
                 break;
+            case "chinese_reading_mode":
+                AppConfig.ConfigObject.ChineseReadingMode = Convert.ToInt32((long) d.Value);
+
+                break;
+            case "pinyin_tone_marks":
+                AppConfig.ConfigObject.PinyinToneMarks = (bool) d.Value;
+
+                break;
             case "chatbox_line_gap":
                 AppConfig.ConfigObject.ChatboxLineGap = Convert.ToInt32((long) d.Value);
 

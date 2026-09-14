@@ -227,6 +227,32 @@ export const localization = {
         cn: "两者之间的空行数",
         kr: "사이의 빈 줄 수",
     },
+    chinese_reading_mode: {
+        en: "Chinese text in chatbox",
+        jp: "チャットボックスの中国語表示",
+        cn: "聊天框中的中文显示",
+        kr: "채팅창 중국어 표시",
+    },
+    chinese_hanzi: { en: "Hanzi only", jp: "漢字のみ", cn: "仅汉字", kr: "한자만" },
+    chinese_pinyin_only: { en: "Pinyin only", jp: "ピンインのみ", cn: "仅拼音", kr: "병음만" },
+    chinese_hanzi_pinyin: {
+        en: "Pinyin after each character",
+        jp: "各文字の後にピンイン",
+        cn: "每字后标注拼音",
+        kr: "각 글자 뒤에 병음",
+    },
+    pinyin_tone_marks: {
+        en: "Show pinyin tone marks",
+        jp: "ピンインの声調記号を表示",
+        cn: "显示拼音声调符号",
+        kr: "병음 성조 표시",
+    },
+    pinyin_tone_marks_tooltip: {
+        en: "With this on, pinyin is written with tone marks (nǐ hǎo). With it off, the syllables are written without them (ni hao).",
+        jp: "オンの場合、声調記号付きで表示されます（nǐ hǎo）。オフの場合は記号なしです（ni hao）。",
+        cn: "开启后拼音带声调符号（nǐ hǎo），关闭后不带声调（ni hao）。",
+        kr: "켜면 성조 부호가 표시되고(nǐ hǎo), 끄면 표시되지 않습니다(ni hao).",
+    },
     furigana_line: {
         en: "Readings on their own line",
         jp: "読みを別の行に表示",

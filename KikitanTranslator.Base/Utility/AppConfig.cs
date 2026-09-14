@@ -201,6 +201,40 @@ public class ConfigObject : INotifyPropertyChanged
         }
     }
 
+    // Controls how Chinese is shown in the VRChat chatbox.
+    // 0 = hanzi only, 1 = pinyin only, 2 = hanzi with pinyin after each character.
+    [JsonProperty("chinese_reading_mode")] private int _chineseReadingMode;
+
+    [JsonIgnore]
+    public int ChineseReadingMode
+    {
+        get => _chineseReadingMode;
+        set
+        {
+            if (_chineseReadingMode != value)
+            {
+                _chineseReadingMode = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    [JsonProperty("pinyin_tone_marks")] private bool _pinyinToneMarks = true;
+
+    [JsonIgnore]
+    public bool PinyinToneMarks
+    {
+        get => _pinyinToneMarks;
+        set
+        {
+            if (_pinyinToneMarks != value)
+            {
+                _pinyinToneMarks = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     // Blank lines inserted between the translation and the original.
     [JsonProperty("chatbox_line_gap")] private int _chatboxLineGap;
 
