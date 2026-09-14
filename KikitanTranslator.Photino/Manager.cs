@@ -245,7 +245,10 @@ public class Manager
             _desktopKikitan = new Kikitan(rDesktop, _translator, new ErrorHandler(_connector), true);
             _desktopKikitan.AddOutput(new Custom((recognized, translated, final) =>
             {
-                var text = AppConfig.ConfigObject.SpeechToTextOnly ? recognized : translated;
+                // Partial results carry no translation yet. Showing the recognised text as
+                // it streams is what makes this feel live; the translation replaces it on
+                // the final result. Nothing rate limits this overlay, unlike the chatbox.
+                var text = AppConfig.ConfigObject.SpeechToTextOnly || !final ? recognized : translated;
                 var time = text.Length * AppConfig.ConfigObject.ChatboxWaitPerCharMs;
 
                 if (text.Trim().Length == 0) return;
