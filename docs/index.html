@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kikitan Translator — live speech translation for VRChat</title>
+<meta name="description" content="Live speech translation for VRChat, with furigana and pinyin for language learners.">
+<style>
+  :root {
+    --ink: #eef2ff;
+    --muted: #9aa6c4;
+    --accent: #5b8dff;
+    --accent-hover: #7aa3ff;
+    --panel: rgba(255, 255, 255, .06);
+    --line: rgba(255, 255, 255, .12);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: #05070f;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Atmosphere built from gradients so the page needs no image assets. */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 50% 120%, rgba(91, 141, 255, .40) 0%, transparent 60%),
+      radial-gradient(90% 70% at 15% 10%, rgba(138, 92, 255, .28) 0%, transparent 55%),
+      radial-gradient(70% 60% at 85% 20%, rgba(0, 190, 214, .20) 0%, transparent 55%),
+      linear-gradient(180deg, #060915 0%, #05070f 60%, #04060c 100%);
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(70% 55% at 50% 45%, transparent 0%, rgba(2, 4, 10, .55) 100%);
+    pointer-events: none;
+  }
+
+  nav {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .brand { font-weight: 650; letter-spacing: .2px; }
+  .brand span { color: var(--muted); font-weight: 400; }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: .95rem;
+    transition: color .15s ease;
+  }
+  nav a:hover { color: var(--ink); }
+
+  .hero-body {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 48px 20px 72px;
+  }
+
+  h1 {
+    margin: 0 0 14px;
+    font-size: clamp(2.3rem, 7vw, 4.4rem);
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    font-weight: 750;
+  }
+
+  .tagline {
+    margin: 0 0 40px;
+    max-width: 34ch;
+    color: var(--muted);
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    line-height: 1.5;
+  }
+
+  .download {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 30px;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 1.08rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 10px 34px rgba(91, 141, 255, .36);
+    transition: background .15s ease, transform .15s ease, box-shadow .15s ease;
+  }
+  .download:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 14px 40px rgba(91, 141, 255, .44);
+  }
+  .download svg { flex: none; }
+
+  .meta { margin-top: 18px; font-size: .95rem; color: var(--ink); }
+  .meta .sub { display: block; margin-top: 6px; color: var(--muted); font-size: .86rem; }
+  .meta a { color: var(--ink); }
+
+  .secondary {
+    margin-top: 30px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .secondary a {
+    padding: 10px 18px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--panel);
+    color: var(--ink);
+    text-decoration: none;
+    font-size: .9rem;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .secondary a:hover { border-color: rgba(255,255,255,.28); background: rgba(255,255,255,.1); }
+
+  .features {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 84px 20px 40px;
+    display: grid;
+    gap: 22px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  .card {
+    padding: 26px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  }
+  .card h2 { margin: 0 0 8px; font-size: 1.05rem; }
+  .card p { margin: 0; color: var(--muted); font-size: .95rem; line-height: 1.55; }
+  .card .sample {
+    margin-top: 14px;
+    font-size: 1.05rem;
+    color: var(--ink);
+    letter-spacing: .01em;
+  }
+  .card .sample small { color: var(--accent); }
+
+  footer {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+    color: var(--muted);
+    font-size: .88rem;
+    line-height: 1.6;
+    border-top: 1px solid var(--line);
+  }
+  footer a { color: var(--ink); }
+
+  @media (max-width: 520px) {
+    nav { padding: 16px; }
+    .download { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <nav>
+    <div class="brand">Kikitan <span>Translator</span></div>
+    <a href="https://github.com/YabaDabaHaba/kikitan-translator">GitHub</a>
+  </nav>
+
+  <div class="hero-body">
+    <h1>Understand every word</h1>
+    <p class="tagline">Live speech translation for VRChat, with furigana and pinyin for people learning the language.</p>
+
+    <a class="download" id="download"
+       href="https://github.com/YabaDabaHaba/kikitan-translator/releases/latest/download/KikitanTranslator-win-Setup.exe">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      Download Kikitan
+    </a>
+
+    <div class="meta">
+      <span id="platform">Windows · Installer</span>
+      <span class="sub" id="release">Fetching the latest release…</span>
+    </div>
+
+    <div class="secondary">
+      <a href="https://github.com/YabaDabaHaba/kikitan-translator/releases/latest/download/KikitanTranslator-win-Portable.zip">Portable version</a>
+      <a href="https://github.com/YabaDabaHaba/kikitan-translator/releases">All releases</a>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="card">
+    <h2>Furigana</h2>
+    <p>Readings above the kanji, per character or per word, so Japanese stays readable while you play.</p>
+    <p class="sample">日本語<small>[にほんご]</small>を勉強<small>[べんきょう]</small>しています</p>
+  </div>
+  <div class="card">
+    <h2>Pinyin</h2>
+    <p>Phrase-aware readings with optional tone marks, so 银行 comes out as háng rather than xíng.</p>
+    <p class="sample">我要去银行<small>[yín háng]</small>取钱</p>
+  </div>
+  <div class="card">
+    <h2>Live captions</h2>
+    <p>Speech appears as it is spoken, in the chatbox and in a transparent overlay you can read in game.</p>
+    <p class="sample">Hello <small>→</small> こんにちは</p>
+  </div>
+</section>
+
+<footer>
+  <p>
+    Kikitan Translator is free and open source, released under the licence of the
+    <a href="https://github.com/YusufOzmen01/kikitan-translator">original project by YusufOzmen01</a>.
+    This fork adds the reading aids for language learners.
+  </p>
+  <p>Windows 10 version 2004 or newer. Requires the Microsoft Edge WebView2 runtime, which is already part of current Windows installs.</p>
+</footer>
+
+<script>
+  // The release line fills itself in, so tagging a release is all it takes to update
+  // this page. The button already points at a permanent "latest" URL either way.
+  fetch("https://api.github.com/repos/YabaDabaHaba/kikitan-translator/releases/latest")
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (release) {
+      var setup = (release.assets || []).filter(function (a) {
+        return /Setup\.exe$/i.test(a.name);
+      })[0];
+
+      var version = (release.tag_name || "").replace(/^v/, "");
+      var parts = [];
+
+      if (version) parts.push("Version " + version);
+      if (setup) parts.push((setup.size / 1048576).toFixed(0) + " MB");
+      if (release.published_at) {
+        parts.push(new Date(release.published_at).toLocaleDateString(undefined, {
+          year: "numeric", month: "long", day: "numeric"
+        }));
+      }
+
+      document.getElementById("release").textContent = parts.join("  ·  ");
+      if (setup) document.getElementById("download").href = setup.browser_download_url;
+    })
+    .catch(function () {
+      document.getElementById("release").textContent = "Latest release on GitHub";
+    });
+</script>
+
+</body>
+</html>

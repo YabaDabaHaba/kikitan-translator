@@ -176,7 +176,9 @@ public class OverlayServer
         }
 
         var image = surface.Snapshot();
-        var data = image.Encode(SKEncodedImageFormat.Jpeg, 90);
+        // Png, not Jpeg: Jpeg has no alpha channel, so it would flatten the transparent
+        // background and the translucent panel into something fully opaque.
+        var data = image.Encode(SKEncodedImageFormat.Png, 100);
         
         return data.ToArray();
     }
