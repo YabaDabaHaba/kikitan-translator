@@ -1,0 +1,97 @@
+name: Release
+
+# Pushing a version tag builds the installer and publishes it to Releases.
+# Running this by hand builds the same thing but only attaches it as an artifact.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build, without the leading v (e.g. 2.1.1)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Build and publish Windows release
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      # The tag is the single source of truth for the version, so the installer and
+      # the release can never disagree.
+      - name: Resolve version
+        id: version
+        shell: pwsh
+        run: |
+          $version = if ($env:GITHUB_REF -like 'refs/tags/*') {
+            $env:GITHUB_REF -replace '^refs/tags/v?', ''
+          } else {
+            '${{ github.event.inputs.version }}'
+          }
+          "value=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          Write-Host "Building version $version"
+
+      # npm install rather than npm ci: the committed lock file is not currently in
+      # step with package.json, and ci refuses to run in that state.
+      - name: Install UI dependencies
+        working-directory: KikitanTranslator.Photino/UserInterface
+        run: npm install
+
+      - name: Restore the pinned vpk packaging tool
+        run: dotnet tool restore
+
+      - name: Build
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
+        run: dotnet build KikitanTranslator.Photino/KikitanTranslator.Photino.csproj -c Release -p:Version=${{ steps.version.outputs.value }}
+
+      - name: Test
+        run: dotnet test KikitanTranslator.Tests/KikitanTranslator.Tests.csproj -c Release
+
+      # Found rather than hardcoded: the output path contains the target framework,
+      # which has changed before and would silently break a fixed path.
+      - name: Locate packaged release
+        id: packages
+        shell: pwsh
+        run: |
+          $dir = Get-ChildItem -Path 'KikitanTranslator.Photino/bin/Release' -Recurse -Directory -Filter 'Release' |
+                 Where-Object { Test-Path (Join-Path $_.FullName 'releases.win.json') } |
+                 Select-Object -First 1
+          if (-not $dir) { throw 'No packaged release containing releases.win.json was found.' }
+          "dir=$($dir.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          Get-ChildItem $dir.FullName | Format-Table Name, Length
+
+      - name: Publish to Releases
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
+        run: >
+          dotnet tool run vpk -- upload github
+          -o "${{ steps.packages.outputs.dir }}"
+          --repoUrl https://github.com/${{ github.repository }}
+          --token ${{ secrets.GITHUB_TOKEN }}
+          --tag ${{ github.ref_name }}
+          --releaseName "Kikitan Translator ${{ steps.version.outputs.value }}"
+          --publish
+          --merge
+
+      - name: Upload installer as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kikitan-translator-windows
+          path: ${{ steps.packages.outputs.dir }}
+          if-no-files-found: error
