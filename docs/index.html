@@ -87,7 +87,10 @@
     width: min(260px, 62vw);
     height: auto;
     margin-bottom: 26px;
-    filter: drop-shadow(0 12px 40px rgba(91, 141, 255, .35));
+    /* The artwork has its own dark backing rather than transparency, so the corners are
+       rounded to make that read as a deliberate panel against the gradient. */
+    border-radius: 18px;
+    box-shadow: 0 12px 44px rgba(91, 141, 255, .30);
   }
 
   h1 {
