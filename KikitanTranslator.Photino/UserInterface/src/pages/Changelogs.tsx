@@ -21,7 +21,9 @@ export default function Changelogs({ closeCallback, state }: ChangelogsProps) {
     const [changelog, setChangelog] = React.useState("")
 
     React.useEffect(() => {
-        fetchURL(`https://github.com/YusufOzmen01/kikitan-translator/releases/latest/download/CHANGELOG_${state.config.language}.html`).then(c => setChangelog(c))
+        // This fork's own releases, and a single file: the notes are generated from commit
+        // subjects, which are not translated.
+        fetchURL("https://github.com/YabaDabaHaba/kikitan-translator/releases/latest/download/CHANGELOG.html").then(c => setChangelog(c))
     }, [])
 
     return <>

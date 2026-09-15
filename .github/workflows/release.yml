@@ -22,6 +22,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-dotnet@v4
         with:
@@ -88,6 +90,33 @@ jobs:
           --releaseName "Kikitan Translator ${{ steps.version.outputs.value }}"
           --publish
           --merge
+
+      # The in-app changelog reads this from the release, so it is built from the commit
+      # subjects since the previous tag rather than maintained by hand.
+      - name: Build the changelog
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        run: |
+          $tag = '${{ github.ref_name }}'
+          $previous = git tag --sort=-v:refname | Where-Object { $_ -ne $tag } | Select-Object -First 1
+          $range = if ($previous) { "$previous..$tag" } else { $tag }
+          Write-Host "Changelog range: $range"
+
+          $subjects = git log $range --no-merges --pretty=format:'%s' |
+            Where-Object { $_ -and $_ -notmatch 'project version in step' }
+
+          $items = ($subjects | ForEach-Object {
+            '<li>' + [System.Net.WebUtility]::HtmlEncode($_) + '</li>'
+          }) -join "`n"
+
+          if (-not $items) { $items = '<li>Maintenance and packaging changes.</li>' }
+          "<h3>$tag</h3>`n<ul>`n$items`n</ul>" | Set-Content CHANGELOG.html -Encoding utf8
+
+      - name: Attach the changelog to the release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload ${{ github.ref_name }} CHANGELOG.html --clobber
 
       - name: Upload installer as an artifact
         uses: actions/upload-artifact@v4
