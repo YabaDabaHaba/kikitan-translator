@@ -83,6 +83,13 @@
     padding: 48px 20px 72px;
   }
 
+  .logo {
+    width: min(260px, 62vw);
+    height: auto;
+    margin-bottom: 26px;
+    filter: drop-shadow(0 12px 40px rgba(91, 141, 255, .35));
+  }
+
   h1 {
     margin: 0 0 14px;
     font-size: clamp(2.3rem, 7vw, 4.4rem);
@@ -195,6 +202,9 @@
   </nav>
 
   <div class="hero-body">
+    <!-- Hidden rather than shown broken if the file is not there yet. -->
+    <img class="logo" src="logo.png" alt="Kikitan Translator"
+         onerror="this.style.display='none'">
     <h1>Understand every word</h1>
     <p class="tagline">Live speech translation for VRChat, with furigana and pinyin for people learning the language.</p>
 
